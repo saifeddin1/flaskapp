@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Manage Employees</h1>
+<form method="POST" action="/employees" class="mb-3">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="role" class="form-label">Role</label>
+        <input type="text" class="form-control" id="role" name="role" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Employee</button>
+</form>
+<h2>Employee List</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.id }}</td>
+            <td>{{ employee.name }}</td>
+            <td>{{ employee.role }}</td>
+            <td>
+                <a href="/delete_employee/{{ employee.id }}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

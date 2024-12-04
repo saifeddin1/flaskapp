@@ -1,0 +1,10 @@
+{% extends "base.html" %} {% block content %}
+<h1>Data Analysis</h1>
+
+<p>The chart below shows the distribution of operation types:</p>
+<img
+  src="{{ url_for('analysis.plot_operations') }}"
+  alt="Operation Types Distribution"
+/>
+
+{% endblock %}

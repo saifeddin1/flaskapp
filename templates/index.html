@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="text-center">Welcome to the Viticulture App</h1>
+
+<div class="text-center mt-4">
+  {% if current_user.role == 'researcher' %}
+  <form action="/send_annual_report" method="POST">
+    <button type="submit" class="btn btn-success">
+      Send Annual Summary Report
+    </button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

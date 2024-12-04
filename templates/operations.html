@@ -1,0 +1,143 @@
+{% extends "base.html" %} {% block content %} {% if current_user.role !=
+'researcher' %}
+<h1>Manage Operations</h1>
+
+<!-- Formulaire pour ajouter une nouvelle opération -->
+<form method="POST" action="/operations/add" class="mb-3">
+  <div class="mb-3">
+    <label for="operation_type" class="form-label">Operation Type</label>
+    <select
+      class="form-select"
+      id="operation_type"
+      name="operation_type"
+      required
+    >
+      <option value="">Select an Operation Type</option>
+      <option value="Standard">Standard</option>
+      <option value="Phytosanitary">Phytosanitary</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="date" class="form-label">Date</label>
+    <input type="date" class="form-control" id="date" name="date" required />
+  </div>
+
+  <div class="mb-3">
+    <label for="employee_id" class="form-label">Assigned Employee</label>
+    <select class="form-select" id="employee_id" name="employee_id" required>
+      {% for employee in employees %}
+      <option value="{{ employee.id }}">{{ employee.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Champs spécifiques aux données phytosanitaires -->
+  <div id="phytosanitary_fields" style="display: none">
+    <h3>Phytosanitary Details</h3>
+    <div class="mb-3">
+      <label for="diseases_targeted" class="form-label"
+        >Diseases Targeted</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="diseases_targeted"
+        name="diseases_targeted"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="disease_stage" class="form-label">Disease Stage</label>
+      <input
+        type="text"
+        class="form-control"
+        id="disease_stage"
+        name="disease_stage"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="treatment_methods" class="form-label"
+        >Treatment Methods</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="treatment_methods"
+        name="treatment_methods"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="observations" class="form-label">Observations</label>
+      <textarea
+        class="form-control"
+        id="observations"
+        name="observations"
+      ></textarea>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Add Operation</button>
+</form>
+{% endif %}
+<!-- Liste des opérations existantes -->
+<h2>Operation List</h2>
+
+{% if current_user.role == 'researcher' and not all_operations_confirmed %}
+<!-- Show Confirm Operations Button for Researchers -->
+<form action="/operations/confirm" method="POST" class="mb-3">
+  <button type="submit" class="btn btn-success">Confirm Operations</button>
+</form>
+{% endif %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Employee</th>
+      <th>Researcher Confirmed</th>
+      {% if current_user.role != 'researcher' %}
+      <th>Actions</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for operation in operations %}
+    <tr>
+      <td>{{ operation.id }}</td>
+      <td>{{ operation.operation_type }}</td>
+      <td>{{ operation.date }}</td>
+      <td>{{ operation.employee.name }}</td>
+      <td>{{ 'Yes' if operation.researcher_confirmed else 'No' }}</td>
+      {% if current_user.role != 'researcher' %}
+      <td>
+        <form
+          action="/operations/delete/{{ operation.id }}"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Script pour afficher/masquer les champs phytosanitaires -->
+<script>
+  document
+    .getElementById("operation_type")
+    .addEventListener("change", function () {
+      const phytosanitaryFields = document.getElementById(
+        "phytosanitary_fields"
+      );
+      if (this.value.toLowerCase() === "phytosanitary") {
+        phytosanitaryFields.style.display = "block";
+      } else {
+        phytosanitaryFields.style.display = "none";
+      }
+    });
+</script>
+{% endblock %}

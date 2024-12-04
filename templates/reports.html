@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block content %}
+<h1>Reports</h1>
+
+<h2>Generate Reports</h2>
+
+{%if all_operations_confirmed %}
+<div class="list-group">
+  <!-- Rapport par employé -->
+  {% for employee in employees %}
+  <a
+    href="/reports/generate_employee_report/{{ employee.id }}"
+    class="list-group-item list-group-item-action"
+  >
+    Generate Report for {{ employee.name }} (ID: {{ employee.id }})
+  </a>
+  {% endfor %}
+
+  <!-- Rapport phytosanitaire -->
+  <a
+    href="/reports/generate_phytosanitary_report"
+    class="list-group-item list-group-item-action mt-3"
+  >
+    Generate Phytosanitary Report
+  </a>
+</div>
+{% else %}
+<p class="text-warning">
+  Awaiting researcher confirmation before generating reports.
+</p>
+
+{% endif %} {% endblock %}
